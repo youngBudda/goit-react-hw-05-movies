@@ -1,14 +1,15 @@
-import { StyledCast } from './Cast.styled';
-import { requestCast } from 'services/api';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { requestCast } from 'services/api';
 import { toast } from 'react-toastify';
 import Notification from 'components/Notification/Notification';
 import Loader from 'components/Loader/Loader';
+import { StyledCast } from './Cast.styled';
+import voldemort from '../../components/images/voldemort.webp';
 
 const Cast = () => {
   const { movieId } = useParams();
-  const [cast, setCast] = useState();
+  const [cast, setCast] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -28,24 +29,28 @@ const Cast = () => {
 
   return (
     <StyledCast>
-      <ul className="cast">
-        {cast?.map(({ credit_id, profile_path, name, character }) => {
-          return (
-            profile_path && (
-              <li className="cast" key={credit_id}>
-                <img
-                  src={`https://image.tmdb.org/t/p/w500${profile_path}`}
-                  alt={name}
-                  loading="lazy"
-                />
-                <h3>{name}</h3>
-                <p>{character}</p>
-              </li>
-            )
-          );
-        })}
-      </ul>
       {loading && <Loader />}
+      {cast.length > 0 ? (
+        <ul className="cast">
+          {cast.map(({ credit_id, profile_path, name, character }) => (
+            <li className="cast" key={credit_id}>
+              <img
+                src={
+                  profile_path
+                    ? `https://image.tmdb.org/t/p/w500${profile_path}`
+                    : voldemort
+                }
+                alt={name}
+                loading="lazy"
+              />
+              <h3>{name}</h3>
+              <p>{character}</p>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div>We don't have any cast for this movie.</div>
+      )}
       <Notification />
     </StyledCast>
   );

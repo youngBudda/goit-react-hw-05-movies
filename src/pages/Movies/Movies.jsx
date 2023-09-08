@@ -23,7 +23,7 @@ const Movies = () => {
       try {
         setLoading(true);
         const data = await requestFindingMovies(searchValue);
-        if (!data.result.length) {
+        if (!data.results.length) {
           toast.error('No movies found');
         }
         setFilteredMovies(data.results);
